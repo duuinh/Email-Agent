@@ -9,6 +9,7 @@ builder.ConfigureFunctionsWebApplication();
 
 builder.Services
     .AddApplicationInsightsTelemetryWorkerService()
-    .ConfigureFunctionsApplicationInsights();
+    .ConfigureFunctionsApplicationInsights()
+    .AddSingleton<AIAgentsService>();
 
 builder.Build().Run();
