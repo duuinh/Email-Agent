@@ -16,13 +16,13 @@ public class TimerTrigger
     }
 
     [Function(nameof(TimerTrigger))]
-    public async Task RunAsync([TimerTrigger("0 */1 * * * *")] TimerInfo myTimer)
+    public async Task RunAsync([TimerTrigger("0 */5 * * * *")] TimerInfo myTimer)
     {
         _logger.LogInformation("C# Timer trigger function executed at: {executionTime}", DateTime.Now);
 
-        string response = await _aiAgentsService.GetResponseAsync("Hi, can you tell me the specials today?");
-        _logger.LogInformation("AI Response: {response}", response);
-        
+        string response = await _aiAgentsService.GetResponseAsync("Automate the handling of incoming customer service emails");
+        _logger.LogInformation(response);
+
         if (myTimer.ScheduleStatus is not null)
         {
             _logger.LogInformation("Next timer schedule at: {nextSchedule}", myTimer.ScheduleStatus.Next);
