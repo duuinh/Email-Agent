@@ -1,15 +1,15 @@
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Agents;
 using Microsoft.Extensions.Configuration;
-using System.ComponentModel;
 using System.ClientModel;
 using OpenAI;
 using Microsoft.SemanticKernel.Agents.Orchestration;
 using Microsoft.SemanticKernel.Agents.Orchestration.Handoff;
 using Microsoft.SemanticKernel.Agents.Runtime.InProcess;
 using Microsoft.Extensions.Logging;
-using System.Text.Json.Serialization;
 using Microsoft.Extensions.DependencyInjection;
+using EmailAgent.Plugins;
+
 public class AIAgentsService
 {
 #pragma warning disable SKEXP0110 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
@@ -78,7 +78,7 @@ public class AIAgentsService
     }
 
     // Helper function to create a kernel with chat completion
-    protected static Kernel CreateKernelWithChatCompletion(IConfiguration config)
+    private static Kernel CreateKernelWithChatCompletion(IConfiguration config)
     {
         var modelId = "openai/gpt-4.1-mini";
         var uri = "https://models.github.ai/inference";
@@ -93,21 +93,13 @@ public class AIAgentsService
 
         return builder.Build();
     }
-    public async Task<string> GetResponseAsync(string task)
+    public async Task<string> GetResponseAsync(Email input)
     {
-        Email email = new()
-        {
-            Id = 7,
-            Subject = "Re: Update My Registered Mobile Number",
-            From = "sara.lee@example.com",
-            Body = "Can you confirm if my mobile number has been updated in your system?"
-        };
-
         InProcessRuntime runtime = new InProcessRuntime();
         await runtime.StartAsync();
 
 #pragma warning disable SKEXP0110 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
-        OrchestrationResult<string> result = await _orchestration.InvokeAsync(email, runtime);
+        OrchestrationResult<string> result = await _orchestration.InvokeAsync(input, runtime);
 #pragma warning restore SKEXP0110 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
 #pragma warning disable SKEXP0110 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
@@ -117,42 +109,5 @@ public class AIAgentsService
         await runtime.RunUntilIdleAsync();
 
         return $"RESULT: {resultText}";
-    }
-
-    sealed class Email
-    {
-        [JsonPropertyName("id")]
-        public int Id { get; set; } = 0;
-
-        [JsonPropertyName("from")]
-        public string From { get; set; } = string.Empty;
-
-        [JsonPropertyName("subject")]
-        public string Subject { get; set; } = string.Empty;
-
-        [JsonPropertyName("body")]
-        public string Body { get; set; } = string.Empty;
-    }
-
-    sealed class EmailPlugin
-    {
-        [KernelFunction, Description("Writes a response to an email.")]
-        public string WriteResponse(string emailAddress, string subject, string response) =>
-        $"""
-            To: {emailAddress}
-            Subject: {subject}
-            Body: {response}
-        """;
-    }
-
-    sealed class ServiceRequestPlugin
-    {
-        [KernelFunction, Description("Creates a service request (SR) based on the email content.")]
-        public string CreateServiceRequest(string emailContent) =>
-            $"Service Request created for email: {emailContent}";
-
-        [KernelFunction, Description("Gets the status of a service request.")]
-        public string GetServiceRequestStatus(string srId) =>
-            $"Status of Service Request {srId} is: In Progress";
     }
 }
