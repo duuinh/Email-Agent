@@ -9,6 +9,7 @@ using Microsoft.SemanticKernel.Agents.Runtime.InProcess;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using EmailAgent.Plugins;
+using Octokit;
 
 public class AIAgentsService
 {
@@ -16,10 +17,10 @@ public class AIAgentsService
     private readonly HandoffOrchestration<Email, string> _orchestration;
 #pragma warning restore SKEXP0110 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
-    public AIAgentsService(IConfiguration config, ILoggerFactory loggerFactory)
+    public AIAgentsService(IConfiguration config, ILoggerFactory loggerFactory, GitHubClient client)
     {
         KernelPlugin emailPlugin = KernelPluginFactory.CreateFromType<EmailPlugin>();
-        KernelPlugin srPlugin = KernelPluginFactory.CreateFromType<ServiceRequestPlugin>();
+        KernelPlugin srPlugin = KernelPluginFactory.CreateFromObject(new ServiceRequestPlugin(client));
 
         ChatCompletionAgent emailTriageAgent = new ChatCompletionAgent
         {
