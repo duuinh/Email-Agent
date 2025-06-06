@@ -1,6 +1,4 @@
 using System.ComponentModel;
-using EmailAgent.Utils;
-using Microsoft.Extensions.Configuration;
 using Microsoft.SemanticKernel;
 using Octokit;
 
@@ -26,10 +24,30 @@ namespace EmailAgent.Plugins
             return $"Service Request created with number: {issue.Number}";
         }
 
-        [KernelFunction, Description("Gets the status of a service request.")]
+        [KernelFunction, Description("Gets the status of a service request (SR)")]
         public async Task<string> GetServiceRequestStatusAsync(int srNumber) {
-            var issue = await _client.Issue.Get("duuinh", "email-agent", srNumber);
-            return $"Status of Service Request {srNumber} is: {issue.State.Value}"; 
+            try
+            {
+                var issue = await _client.Issue.Get("duuinh", "email-agent", srNumber);
+                if (issue.State.Value == ItemState.Closed)
+                {   
+                    return $"SR#{srNumber} is resolved and closed.";
+                }
+                if (issue.Comments > 0)
+                {
+                    var comments = await _client.Issue.Comment.GetAllForIssue("duuinh", "email-agent", srNumber);
+                    var lastComment = comments.LastOrDefault();
+                    if (lastComment != null)
+                    {
+                        return $"SR#{srNumber} is being processed. Last Update: {lastComment.Body}";
+                    }
+                }
+                return $"SR#{srNumber} is being processed. No updates available.";
+            }
+            catch (Exception ex)
+            {
+                return $"Error retrieving SR status: {ex.Message}";
+            }
         }
     }
 }
