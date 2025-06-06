@@ -3,7 +3,7 @@ name: Build and deploy dotnet core app to Azure Function App
 on:
   push:
     branches:
-      - master
+      - main
   workflow_dispatch:
 
 env:
