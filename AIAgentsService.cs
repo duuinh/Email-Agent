@@ -17,11 +17,9 @@ public class AIAgentsService
 
     public AIAgentsService(IConfiguration config, ILoggerFactory loggerFactory, GitHubClient client)
     {
-        KernelPlugin emailPlugin = KernelPluginFactory.CreateFromType<EmailPlugin>();
         KernelPlugin srPlugin = KernelPluginFactory.CreateFromObject(new ServiceRequestPlugin(client));
         Kernel kernel = CreateKernelWithChatCompletion(config);
         kernel.Plugins.Add(srPlugin);
-        kernel.Plugins.Add(emailPlugin);
 
         ChatCompletionAgent emailTriageAgent = new ChatCompletionAgent
         {
@@ -118,6 +116,6 @@ public class AIAgentsService
 
         await runtime.RunUntilIdleAsync();
 
-        return $"RESULT: {resultText}";
+        return resultText;
     }
 }
