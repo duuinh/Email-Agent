@@ -1,8 +1,6 @@
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Agents;
 using Microsoft.Extensions.Configuration;
-using System.ClientModel;
-using OpenAI;
 using Microsoft.SemanticKernel.Agents.Orchestration;
 using Microsoft.SemanticKernel.Agents.Orchestration.Handoff;
 using Microsoft.SemanticKernel.Agents.Runtime.InProcess;
@@ -94,14 +92,12 @@ public class AIAgentsService
     // Helper function to create a kernel with chat completion
     private static Kernel CreateKernelWithChatCompletion(IConfiguration config)
     {
-        var modelId = "openai/gpt-4.1-mini";
-        var uri = "https://models.github.ai/inference";
-        var githubPAT = config["githubPAT"];
-
-        var client = new OpenAIClient(new ApiKeyCredential(githubPAT), new OpenAIClientOptions { Endpoint = new Uri(uri) });
+        var modelId = config["modelId"];
+        var uri = config["uri"];
+        var apiKey = config["openaiApiKey"];
 
         var builder = Kernel.CreateBuilder();
-        builder.AddOpenAIChatCompletion(modelId, client);
+        builder.AddAzureOpenAIChatCompletion(modelId: modelId, deploymentName: modelId, endpoint: uri, apiKey: apiKey);
 
         builder.Services.AddLogging(services => services.AddConsole().SetMinimumLevel(LogLevel.Trace));
 
