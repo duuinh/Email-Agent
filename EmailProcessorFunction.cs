@@ -19,7 +19,7 @@ public class EmailProcessor
 
     [Function(nameof(EmailProcessor))]
     public async Task<HttpResponseData> RunAsync(
-        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "process-email")] HttpRequestData req)
+        [HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req)
     {
         _logger.LogInformation("Email Processor function executed");
 
