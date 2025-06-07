@@ -7,10 +7,10 @@ Automate and enhance the handling of incoming customer service emails in a banki
 <p align="center">
   <img src="https://github.com/user-attachments/assets/c4ad74bb-f416-4326-ac1b-a51db2caa6be" width="200"/>
 </p>
-The solution uses **Azure Logic Apps** to automate the end-to-end workflow of handling service requests via email. The steps are:
+The solution uses Azure Logic Apps to automate the end-to-end workflow of handling service requests via email. The steps are:
 
 1. **Trigger:** When a new email arrives in the monitored inbox (`When a new email arrives (V2)`).
-2. **Processing:** The Logic App invokes the EmailProcessor Azure Function (`service-request-handling-agent-EmailProcessor`), which analyzes the email content, determines intent, extracts data, and interacts with the SR system.
+2. **Processing:** The app invokes the EmailProcessor Azure Function (`service-request-handling-agent-EmailProcessor`), which analyzes the email content, determines intent, extracts data, and interacts with the SR system.
 3. **Response:** A reply email is automatically sent to the original sender (`Send an email (V2)`).
 
 ## Multi-Agent Orchestration
