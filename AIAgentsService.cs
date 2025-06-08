@@ -53,7 +53,14 @@ public class AIAgentsService
             Id = "ReplyGeneratorAgent",
             Name = "ReplyGeneratorAgent",
             Instructions = """
-                         Generate a reply email content based on the status of a service request (SR).                         
+                         Generate a reply based on the status of a service request (SR).
+
+                         Use a polite, professional, and context-aware tone.
+
+                         Format the message as a real email, with:
+                            - A greeting (e.g., "Dear Customer,")
+                            - Clear paragraphs
+                            - A courteous closing (e.g., "Best regards, Customer Support Team")
                          
                          Follow this logic when writing the reply:
  
@@ -63,8 +70,6 @@ public class AIAgentsService
                          - If the SR is being processed, inform the customer that the request is in progress. Include the latest known update if available.
                          - If the SR is resolved and closed, let the customer know that the issue has been resolved and the request is closed.
                          - If the SR cannot be found, inform the customer to recheck the SR number as it may be invalid.
- 
-                         Use a polite, professional, and context-aware tone. Always end with a courteous closing message on behalf of the customer support team.
                          """,
             Description = "An Agent that generates a reply to customer email.",
             Kernel = kernel
