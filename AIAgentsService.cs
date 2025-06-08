@@ -27,7 +27,7 @@ public class AIAgentsService
             Name = "EmailTriageAgent",
             Instructions = "Classify the email and determine if it requires a Service Request (SR) to be created or if it is a follow-up inquiry.",
             Description = " An Agent that triages customer email",
-            Kernel = kernel
+            Kernel = CreateKernelWithChatCompletion(config)
         };
 
         ChatCompletionAgent srCreatorAgent = new ChatCompletionAgent
@@ -53,7 +53,7 @@ public class AIAgentsService
             Id = "ReplyGeneratorAgent",
             Name = "ReplyGeneratorAgent",
             Instructions = """
-                         Generate a reply to a customer email based on the status of a service request (SR).                         
+                         Generate a reply email content based on the status of a service request (SR).                         
                          
                          Follow this logic when writing the reply:
  
