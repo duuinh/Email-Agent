@@ -13,10 +13,16 @@ builder.ConfigureFunctionsWebApplication();
 builder.Services
     .AddApplicationInsightsTelemetryWorkerService()
     .ConfigureFunctionsApplicationInsights()
+    .AddSingleton<KeyVaultSecretProvider>(provider =>
+    {
+        var keyVaultUri = builder.Configuration["keyVaultUri"];
+        return new KeyVaultSecretProvider(keyVaultUri);
+    })
     .AddSingleton<GitHubClient>(provider =>
     {
         var config = provider.GetRequiredService<IConfiguration>();
-        return GitHubUtil.GetGitHubInstallationClient(config).Result;
+        var keyVaultSecretProvider = provider.GetRequiredService<KeyVaultSecretProvider>();
+        return GitHubUtil.GetGitHubInstallationClient(config, keyVaultSecretProvider).GetAwaiter().GetResult();
     })
     .AddSingleton<AIAgentsService>();
 

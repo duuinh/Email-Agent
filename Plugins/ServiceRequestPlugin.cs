@@ -16,8 +16,7 @@ namespace EmailAgent.Plugins
         public async Task<string> CreateServiceRequestAsync(Email email, ServiceRequestCategory category)
         {
             var createIssue = new NewIssue(email.Subject);
-            createIssue.Body = $"{email.Body} \n" +
-                               $"Customer: {email.From}";
+            createIssue.Body = email.Body;
             createIssue.Labels.Add(category.GetDisplayName());
 
             var issue = await _client.Issue.Create("duuinh", "email-agent", createIssue);

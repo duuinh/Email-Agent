@@ -18,13 +18,16 @@ namespace EmailAgent.Utils
             return generator.CreateEncodedJwtToken();
         }
 
-        public static async Task<GitHubClient> GetGitHubInstallationClient(IConfiguration config)
+        public static async Task<GitHubClient> GetGitHubInstallationClient(IConfiguration config, KeyVaultSecretProvider keyVaultSecretProvider)
         {
             var appId = config["githubAppId"];
             long installationId = long.Parse(config["githubInstallationId"]);
-            var privateKey = "github-app.pem";
 
-            var jwtToken = CreateJwtToken(appId, privateKey);
+            var privateKey = await keyVaultSecretProvider.GetSecretAsync("github-app");
+            var privateKeyPath = "github-app.pem";
+            File.WriteAllText(privateKeyPath, privateKey);
+
+            var jwtToken = CreateJwtToken(appId, privateKeyPath);
 
             var appClient = new GitHubClient(new ProductHeaderValue("EmailAgent"))
             {
