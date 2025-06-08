@@ -32,11 +32,6 @@ jobs:
       run: |
         pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
         
-        $pem = @"
-        ${{ secrets.GH_APP_PEM }}
-        "@ -replace '\\n', "`n"
-            $pem | Out-File -FilePath github-app.pem -Encoding ascii
-
         dotnet build --configuration Release --output ./output
         popd
 
