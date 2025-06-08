@@ -23,10 +23,10 @@ The system uses the Handoff Orchestration pattern in Microsoft Semantic Kernel.
   Classifies the incoming email to determine if it’s a new service request or a follow-up.
 
 * **SRCreatorAgent**
-  Handles service request creation based on email content. Always passes control to ReplyGeneratorAgent.
+  Handles service request creation based on email content, and passes control to ReplyGeneratorAgent.
 
 * **FollowUpHandlerAgent**
-  Checks SR status for follow-up emails. Always passes control to ReplyGeneratorAgent.
+  Checks SR status for follow-up emails, and passes control to ReplyGeneratorAgent.
 
 * **ReplyGeneratorAgent**
   Generates the final customer reply using structured logic depending on the SR state (created, in progress, closed, or not found).
@@ -54,10 +54,11 @@ This modular pipeline enables intelligent, dynamic agent collaboration to automa
 * Azure Logic Apps
 * LLM (Azure OpenAI GPT-4.1-nano)
 * GitHub API
+* Azure Key Vault
 * Azure Application Insights
   
 ## Demo
-[Demo Video: Intelligent Service Request Handling in Action]
+[Demo Video: Intelligent Service Request Handling in Action](https://www.canva.com/design/DAGpx7vptC4/askCR-r3OMHNkTNq2wPyKA/view?utm_content=DAGpx7vptC4&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h4aca4380fd)
 
 ## Try It Yourself!
 Send a service request email to our monitored inbox at:
