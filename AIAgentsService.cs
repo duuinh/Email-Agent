@@ -25,7 +25,17 @@ public class AIAgentsService
         {
             Id = "EmailTriageAgent",
             Name = "EmailTriageAgent",
-            Instructions = "Classify the email and determine if it requires a Service Request (SR) to be created or if it is a follow-up inquiry.",
+            Instructions = """
+                Your task is to:
+                - Carefully read the email.
+                - Classify the email into one of the following categories:
+                    1. NewRequest - The email requires a new service request (SR) to be created.
+                    2. FollowUp - The email is a follow-up to an existing service request.
+
+                Decision Logic:
+                - If the customer is asking about the status, providing an SR number, or referencing a previous request → classify as FollowUp.
+                - If the customer is reporting a new issue or requesting a new service → classify as NewRequest.
+            """,
             Description = " An Agent that triages customer email",
             Kernel = CreateKernelWithChatCompletion(config)
         };
@@ -34,7 +44,10 @@ public class AIAgentsService
         {
             Id = "SRCreatorAgent",
             Name = "SRCreatorAgent",
-            Instructions = "Handling SR creation based on email content. Always transfer to ReplyGeneratorAgent for generating a reply.",
+            Instructions = """
+            Summarize the issue in third person and create the SR with title and details from the summary.
+            Always transfer to ReplyGeneratorAgent for generating a reply.
+            """,
             Description = "An Agent that handles the creation of a Service Request (SR) based on the email content.",
             Kernel = kernel
         };
@@ -53,24 +66,30 @@ public class AIAgentsService
             Id = "ReplyGeneratorAgent",
             Name = "ReplyGeneratorAgent",
             Instructions = """
-                         Generate a reply based on the status of a service request (SR).
-
+                         Generate a html email body based on the status of a service request (SR).
+                         Do NOT mix messages from different statuses.
                          Use a polite, professional, and context-aware tone.
 
-                         Format the message as a real email, with:
-                            - A greeting (e.g., "Dear Customer,")
-                            - Clear paragraphs
-                            - A courteous closing (e.g., "Best regards, Customer Support Team")
+                         Format Requirements:
+                         - Write the reply as a complete, formal email in HTML.
+                         - Include:
+                             - A greeting, e.g., <p>Dear Customer,</p>
+                             - Clear paragraph separation using <p> tags.
+                             - A courteous closing, e.g., <p>Best regards,<br/>Customer Support Team</p>
+                             - Do not use inline styles or excessive formatting. Keep it clean and readable.
                          
                          Follow this logic when writing the reply:
- 
-                         - If the SR was successfully created, confirm creation and include the SR number in this format: 
-                                "Service Request created with number: NUMBER."
-                            Instruct the customer to use this number for any future follow-ups.
-                         - If the SR is being processed, inform the customer that the request is in progress. Include the latest known update if available.
-                         - If the SR is resolved and closed, let the customer know that the issue has been resolved and the request is closed.
-                         - If the SR cannot be found, inform the customer to recheck the SR number as it may be invalid.
-                         """,
+                         - If the SR was successfully created:
+                            - Confirm creation and include this sentence: <strong>Service Request created with number: [SR_NUMBER].</strong>
+                            - Instruct the customer to use this number for any future follow-ups.
+                         - If the SR is being processed:
+                             - Inform the customer that their request is currently being processed.
+                             - Include the latest known update, if available.
+                         - If the SR is closed:
+                             - Inform the customer that their issue has been resolved and the request is now closed.
+                         - If the SR cannot be found:
+                             - Inform the customer that the provided SR number may be invalid and ask them to recheck and provide the correct number.
+                        """,
             Description = "An Agent that generates a reply to customer email.",
             Kernel = kernel
         };
