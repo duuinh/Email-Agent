@@ -13,10 +13,10 @@ namespace EmailAgent.Plugins
         }
 
         [KernelFunction, Description("Creates a service request (SR) based on the email content.")]
-        public async Task<string> CreateServiceRequestAsync(Email email, ServiceRequestCategory category)
+        public async Task<string> CreateServiceRequestAsync(string title, string details, ServiceRequestCategory category)
         {
-            var createIssue = new NewIssue(email.Subject);
-            createIssue.Body = email.Body;
+            var createIssue = new NewIssue(title);
+            createIssue.Body = details;
             createIssue.Labels.Add(category.GetDisplayName());
 
             var issue = await _client.Issue.Create("duuinh", "email-agent", createIssue);
@@ -30,7 +30,7 @@ namespace EmailAgent.Plugins
                 var issue = await _client.Issue.Get("duuinh", "email-agent", srNumber);
                 if (issue.State.Value == ItemState.Closed)
                 {   
-                    return $"SR#{srNumber} is resolved and closed.";
+                    return $"CURRENT STATUS: SR#{srNumber} is resolved and closed.";
                 }
                 if (issue.Comments > 0)
                 {
@@ -41,11 +41,11 @@ namespace EmailAgent.Plugins
                         return $"SR#{srNumber} is being processed. Last Update: {lastComment.Body}";
                     }
                 }
-                return $"SR#{srNumber} is being processed. No updates available.";
+                return $"CURRENT STATUS: SR#{srNumber} is being processed. No updates available.";
             }
             catch (Exception ex)
             {
-                return $"Error retrieving SR status: {ex.Message}";
+                return $"CURRENT STATUS: Error retrieving SR status. {ex.Message}";
             }
         }
     }
