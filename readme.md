@@ -56,9 +56,6 @@ This modular pipeline enables intelligent, dynamic agent collaboration to automa
 * GitHub API
 * Azure Key Vault
 * Azure Application Insights
-  
-## Demo
-[Demo Video: Intelligent Service Request Handling in Action](https://www.canva.com/design/DAGpx7vptC4/askCR-r3OMHNkTNq2wPyKA/view?utm_content=DAGpx7vptC4&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h4aca4380fd)
 
 ## Try It Yourself!
 Send a service request email to our monitored inbox at:
